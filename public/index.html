@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat - مساعدك الذكي</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- highlight.js theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-btn" id="newChatBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>محادثة جديدة</span>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="conversations-list" id="conversationsList">
+                <div class="no-conversations" id="noConversations">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <p>لا توجد محادثات بعد</p>
+                    <p>ابدأ محادثة جديدة للبدء</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="download-all-btn" id="downloadAllBtn" title="تحميل المحادثة الحالية">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>تحميل المحادثة الحالية</span>
+            </button>
+            <button class="download-all-btn" id="settingsBtn" title="إعدادات مفاتيح API">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>إعدادات مفاتيح API</span>
+            </button>
+            <div class="user-info">
+                <div class="avatar">م</div>
+                <span>مستخدم</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h1 class="app-title">AI Chat</h1>
+            </div>
+
+            <div class="top-bar-right">
+                <div class="model-selector" id="modelSelector">
+                    <button class="model-selector-btn" id="modelSelectorBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span id="selectedModelName">Claude Opus 5 Thinking</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <div class="model-dropdown" id="modelDropdown">
+                        <div class="model-option active" data-model="claude-opus-5-thinking">
+                            <div class="model-name">Claude Opus 5 Thinking</div>
+                            <div class="model-desc">الأقوى - للمهام المعقدة</div>
+                        </div>
+                        <div class="model-option" data-model="claude-sonnet-5">
+                            <div class="model-name">Claude Sonnet 5</div>
+                            <div class="model-desc">متوازن - للاستخدام اليومي</div>
+                        </div>
+                        <div class="model-option" data-model="claude-haiku-4-5">
+                            <div class="model-name">Claude Haiku 4.5</div>
+                            <div class="model-desc">الأسرع - للردود الخفيفة</div>
+                        </div>
+                        <div class="model-option" data-model="gpt-4o">
+                            <div class="model-name">GPT-4o</div>
+                            <div class="model-desc">متعدد الوسائط</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Messages Area -->
+        <main class="messages-area" id="messagesArea">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-logo">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <h2>مرحباً! كيف يمكنني مساعدتك؟</h2>
+                <div class="suggestions">
+                    <button class="suggestion-btn" data-prompt="اشرح لي مفهوم الذكاء الاصطناعي">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        اشرح لي مفهوم الذكاء الاصطناعي
+                    </button>
+                    <button class="suggestion-btn" data-prompt="اكتب لي مقالاً عن أهمية القراءة">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        اكتب لي مقالاً عن أهمية القراءة
+                    </button>
+                    <button class="suggestion-btn" data-prompt="ساعدني في كتابة كود JavaScript">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        ساعدني في كتابة كود JavaScript
+                    </button>
+                    <button class="suggestion-btn" data-prompt="ما هي أفضل الممارسات لتعلم لغة جديدة؟">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        ما هي أفضل الممارسات لتعلم لغة جديدة؟
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer"></div>
+        </main>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <button class="stop-btn" id="stopBtn" title="إيقاف التوليد">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                </svg>
+                <span>إيقاف التوليد</span>
+            </button>
+
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea
+                        id="messageInput"
+                        class="message-input"
+                        placeholder="اكتب رسالتك هنا... (Enter للإرسال، Shift+Enter لسطر جديد)"
+                        rows="1"
+                        dir="auto"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" aria-label="إرسال">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+                <p class="input-footer">
+                    قد تكون الردود غير دقيقة. يرجى التحقق من المعلومات المهمة.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal (API Keys) -->
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-modal" id="settingsModal" role="dialog" aria-modal="true">
+            <div class="settings-modal-header">
+                <h2>⚙️ إعدادات مفاتيح API</h2>
+                <button class="settings-close-btn" id="settingsCloseBtn" aria-label="إغلاق">✕</button>
+            </div>
+
+            <!-- Login View -->
+            <div class="settings-login-view" id="settingsLoginView">
+                <p class="settings-hint">أدخل كلمة مرور الإدارة للوصول لإعدادات مفاتيح API.</p>
+                <input type="password" id="adminPasswordInput" class="settings-input" placeholder="كلمة المرور" autocomplete="current-password">
+                <p class="settings-error" id="adminLoginError"></p>
+                <button class="settings-primary-btn" id="adminLoginBtn">دخول</button>
+            </div>
+
+            <!-- Main View -->
+            <div class="settings-main-view" id="settingsMainView" style="display:none;">
+
+                <section class="settings-section">
+                    <h3>وضع التشغيل</h3>
+                    <p class="settings-hint">اختر هل يجرب الموقع المفاتيح تلقائيًا (الأفشل ينتقل للتالي)، أو تختار مفتاح معين يدويًا.</p>
+                    <select id="providerSelect" class="settings-select">
+                        <option value="auto">تلقائي (Failover)</option>
+                    </select>
+                </section>
+
+                <section class="settings-section">
+                    <h3>إضافة مفتاح API جديد</h3>
+                    <form id="addKeyForm" class="settings-form">
+                        <input type="text" id="newKeyName" class="settings-input" placeholder="اسم مميز (مثلاً: المفتاح الرئيسي)" required>
+                        <input type="text" id="newKeyBaseUrl" class="settings-input" placeholder="رابط الـ API" value="https://gorouter.app/v1/chat/completions">
+                        <input type="password" id="newKeyApiKey" class="settings-input" placeholder="مفتاح API" required autocomplete="new-password">
+                        <input type="text" id="newKeyModel" class="settings-input" placeholder="اسم الموديل (اختياري)" value="claude-opus-5-thinking">
+                        <button type="submit" class="settings-primary-btn">+ إضافة المفتاح</button>
+                    </form>
+                </section>
+
+                <section class="settings-section">
+                    <div class="settings-section-header">
+                        <h3>المفاتيح المضافة</h3>
+                        <button class="settings-secondary-btn" id="testAllKeysBtn">اختبار جميع المفاتيح</button>
+                    </div>
+                    <div id="apiKeysList" class="api-keys-list">
+                        <p class="no-keys-msg">جاري التحميل...</p>
+                    </div>
+                </section>
+
+                <button class="settings-logout-btn" id="adminLogoutBtn">تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- marked.js - Markdown Parser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.7/marked.min.js"></script>
+    <!-- highlight.js - Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
