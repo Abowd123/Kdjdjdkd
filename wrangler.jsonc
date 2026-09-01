@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-chat-app",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+
+  // بعد إنشاء الـ Worker، أضف KV Namespace من لوحة Cloudflare:
+  // Settings -> Bindings -> Add -> KV Namespace -> اسم المتغير: CHAT_KV
+  // أو فعّل السطور دي وحط الـ id بتاعك بعد ما تنشئ الـ namespace بأمر:
+  //   npx wrangler kv namespace create CHAT_KV
+  // "kv_namespaces": [
+  //   { "binding": "CHAT_KV", "id": "ضع_الـ_id_هنا" }
+  // ],
+
+  "observability": {
+    "enabled": true
+  }
+}
